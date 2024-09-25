@@ -4,6 +4,8 @@ import requete.RequeteBiblio;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.SQLException;
 
 public class FenetreBiblio extends JFrame {
