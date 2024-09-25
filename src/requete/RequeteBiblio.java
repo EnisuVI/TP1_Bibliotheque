@@ -27,7 +27,7 @@ public class RequeteBiblio {
         ResultSet result = statement.executeQuery(requete);
         while (result.next()) {
             String titre = result.getString("titre");
-            long isbn = result.getLong("isbn");
+            String isbn = result.getString("isbn");
             String auteur = result.getString("auteur");
             String editeur = result.getString("editeur");
             int nbPages = result.getInt("nb_pages");
@@ -69,7 +69,7 @@ public class RequeteBiblio {
         ResultSet result = statement.executeQuery(requete);
         while (result.next()) {
             String titre = result.getString("titre");
-            long isbn = result.getLong("isbn");
+            String isbn = result.getString("isbn");
             String auteur = result.getString("auteur");
             String editeur = result.getString("editeur");
             int nbPages = result.getInt("nb_pages");
@@ -93,7 +93,7 @@ public class RequeteBiblio {
         ResultSet result = prepStatement.executeQuery();
         while (result.next()) {
             String titre = result.getString("titre");
-            long isbn = result.getLong("isbn");
+            String isbn = result.getString("isbn");
             String auteur = result.getString("auteur");
             String editeur = result.getString("editeur");
             int nbPages = result.getInt("nb_pages");
@@ -147,6 +147,54 @@ public class RequeteBiblio {
         return enRetard;
         }
 
+        //Question 12
+        /**public List<Livre> rendreLivre(String titre) throws SQLException {
+        String requete = "INSERT INTO livre(titre) VALUES (?)";
+        Statement statement = this.connection.createStatement();
+        statement.setString(1, titre);
+        int nbRows = statement.executeUpdate(requete);
+        System.out.println(nbRows + " enregistrement(s) ajouté(s)");
+        statement.close();
+        }*/
+
+        //Question 12
+        public void giveBackLivre(Livre livre) throws SQLException {
+
+        if (livre == null) {
+            throw new IllegalArgumentException("Le livre ne peut pas être null");
+        }
+
+        String requete = "UPDATE emprunt SET date_retour = ? WHERE fk_isbn = ? AND date_retour IS NULL";
+        PreparedStatement prepStatement =
+                this.connection.prepareStatement(requete);
+        prepStatement.setDate(1, new Date(System.currentTimeMillis()));
+        prepStatement.setString(2, livre.getIsbn());
+        prepStatement.executeUpdate();
+        prepStatement.close();
+    }
+        //Question 13
+        public void emprunterLivre(Livre livre, Usager usager) throws SQLException {
+
+            if (livre == null) {
+                throw new IllegalArgumentException("Le livre ne peut pas être null");
+            }
+
+             if (usager == null) {
+                throw new IllegalArgumentException("L'usager ne peut pas être null");
+            }
+
+            String requete = "INSERT INTO emprunt (date_emprunt, fk_id_usager, fk_isbn) VALUES (?,?,?)";
+            PreparedStatement prepStatement =
+                this.connection.prepareStatement(requete);
+            prepStatement.setDate(1, new Date(System.currentTimeMillis()));
+            prepStatement.setInt(2, usager.getId());
+            prepStatement.setString(3, livre.getIsbn());
+            prepStatement.executeUpdate();
+            prepStatement.close();
+    }
+
+
+
     public static void main(String[] args) throws SQLException {
         RequeteBiblio connection1 = new RequeteBiblio();
         List<Livre> livres = connection1.biblioAlpha();
@@ -162,5 +210,36 @@ public class RequeteBiblio {
         System.out.println(personneRecherche);
         List<Emprunt> enRetard = connection1.enRetard(20);
         System.out.println(enRetard);
+
+            Livre unLivre = null;
+            for (Livre livre : livres) {
+                if (livre.getIsbn().equals("9782846820820")) {
+                    unLivre = livre;
+                    break;
+                }
+            }
+            assert unLivre != null;
+            System.out.println(unLivre);
+            connection1.giveBackLivre(unLivre);
+
+            Livre unAutreLivre = null;
+            Usager unUsager = null;
+            for (Livre livre : livres) {
+                if (livre.getIsbn().equals("9782846820820")) {
+                    unAutreLivre = livre;
+                    break;
+                }
+            }
+            for (Usager usager : utilsateurs) {
+                if (usager.getId() == 1) {
+                    unUsager = usager;
+                    break;
+                }
+            }
+            assert unAutreLivre != null;
+            assert unUsager != null;
+            connection1.emprunterLivre(unAutreLivre, unUsager);
+
     }
+
 }
