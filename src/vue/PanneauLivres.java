@@ -1,6 +1,7 @@
 package vue;
 
 import modele.Livre;
+import requete.RequeteBiblio;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,14 +11,16 @@ public class PanneauLivres extends JPanel {
     private JTextField filtreRecherche;
     private JList<Livre> listeLivres;
     private JScrollPane scrollPane;
+    private RequeteBiblio requete;
     public static final Color COLORFOND = new Color(30, 30, 42);
     public static final Color COLORTEXT = new Color(241,241,241);
 
-    public PanneauLivres(){
+    public PanneauLivres(RequeteBiblio requete){
         super();
         initComponents();
         initLayout();
-         this.setBackground(COLORFOND);
+        this.requete = requete;
+        this.setBackground(COLORFOND);
     }
 
     private void initComponents(){
