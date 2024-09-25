@@ -1,10 +1,12 @@
 package vue;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class FenetreBiblio extends JFrame {
     private PanneauLivres panneauLivres;
     private PanneauEmprunt panneauEmprunt;
+    public static final Color COLORFOND = new Color(30, 30, 42);
 
      public FenetreBiblio() {
          super();
@@ -12,6 +14,7 @@ public class FenetreBiblio extends JFrame {
          initComponents();
          initLayout();
          this.setVisible(true);
+         this.setBackground(COLORFOND);
      }
 
     private void initFenetre() {
@@ -27,8 +30,10 @@ public class FenetreBiblio extends JFrame {
     }
 
     private void initLayout(){
+         GridLayout layout = new GridLayout(2,1);
+         this.setLayout(layout);
          this.add(panneauLivres);
-         //this.add(panneauEmprunt);
+         this.add(panneauEmprunt);
     }
 
     public static void main(String[] args) {
